@@ -1,0 +1,1 @@
+{"name":"mdx-finder","private":true,"scripts":{"scrape":"node scrape.js"},"dependencies":{"playwright":"^1.64.1"}}
