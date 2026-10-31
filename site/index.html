@@ -5,11 +5,11 @@ h1{margin:0;font-size:22px}#sync{background:#e63946;color:#fff;border:0;padding:
 #stat{font-size:13px;padding:8px 24px;color:#555}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:16px 24px}
 .c{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px #0002;display:flex;flex-direction:column}.c img{width:100%;height:170px;object-fit:cover;background:#ddd}
 .b{padding:10px 12px;font-size:14px;flex:1}.p{font-size:20px;font-weight:700;color:#0b2545}.s{font-size:12px;color:#777}.c a.v{display:block;text-align:center;background:#0b2545;color:#fff;padding:8px;text-decoration:none}
-</style></head><body><header><h1>Acura MDX Finder</h1><span>≤400 mi of North Port 34286 · 20k–50k mi · under $35,000</span><button id=sync>⟳ Sync</button></header>
+</style></head><body><header><h1>Acura MDX Finder</h1><span>≤400 mi of North Port 34286 · 20k–50k mi · under $35,000</span></header>
 <div class=bar>Sort <select id=sort><option value=price>Price ↑</option><option value=-price>Price ↓</option><option value=mileage>Mileage ↑</option><option value=-year>Year (newest)</option><option value=distance>Distance</option></select>
 Max price <input id=maxp type=number placeholder=35000 style=width:90px> Max miles <input id=maxm type=number placeholder=50000 style=width:90px> Min year <input id=miny type=number style=width:70px>
 Source <select id=src><option value="">All</option></select> Search <input id=q placeholder="trim, city…"></div>
-<div id=stat></div><div style="font-size:13px;padding:0 24px 4px">Listings refresh automatically every 6 hours. Sync loads the newest results. <a target=_blank href="https://github.com/russian1987/mdx-finder/actions/workflows/sync.yml">Run a fresh search now</a> (click “Run workflow”; takes ~3–5 minutes, then press Sync).</div><div class=grid id=g></div><script>
+<div id=stat></div><div style="font-size:13px;padding:0 24px 4px">Listings refresh automatically every 6 hours.</div><div class=grid id=g></div><script>
 let D={listings:[]};const $=id=>document.getElementById(id);
 function render(){let L=D.listings.filter(l=>(!$('maxp').value||l.price<=+$('maxp').value)&&(!$('maxm').value||(l.mileage||0)<=+$('maxm').value)&&(!$('miny').value||l.year>=+$('miny').value)&&(!$('src').value||l.source==$('src').value)&&(!$('q').value||JSON.stringify(l).toLowerCase().includes($('q').value.toLowerCase())));
 let s=$('sort').value,d=s[0]=='-'?-1:1,k=s.replace('-','');L.sort((a,b)=>((a[k]??1e9)-(b[k]??1e9))*d);
@@ -17,5 +17,5 @@ $('g').innerHTML=L.map(l=>`<div class=c><img loading=lazy src="${l.img||''}" one
 $('stat').innerHTML=`<b>${L.length}</b> of ${D.listings.length} listings · last updated ${D.syncedAt?new Date(D.syncedAt).toLocaleString():'never'} · `+Object.entries(D.counts||{}).map(([k,v])=>k+': '+v).join(', ')+'<br>'+Object.entries(D.status||{}).filter(([k,v])=>v.direct||v.error).map(([k,v])=>k+' — '+(v.direct||v.error)).join(' | ')}
 function load(d){D=d;$('src').innerHTML='<option value="">All</option>'+Object.keys(d.counts||{}).map(s=>`<option>${s}</option>`).join('');render()}
 fetch('listings.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(load);['sort','maxp','maxm','miny','src','q'].forEach(i=>$(i).oninput=render);
-$('sync').onclick=async()=>{$('sync').disabled=1;$('sync').textContent='Loading…';try{load(await (await fetch('listings.json?t='+Date.now(),{cache:'no-store'})).json())}catch(e){alert(e)}$('sync').disabled=0;$('sync').textContent='⟳ Sync'};
+
 </script></body></html>
